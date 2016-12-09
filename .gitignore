@@ -33,3 +33,4 @@ IkonEngine/IkonEngine.VC.db
 IkonEngine/Junk/
 IkonEngine/Build_Win32/Debug/IkonEngine.ilk
 IkonEngine/Build_Win32/
+*.psess

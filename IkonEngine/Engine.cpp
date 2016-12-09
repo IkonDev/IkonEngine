@@ -42,6 +42,18 @@ bool Engine::Init(unsigned int ScreenX, unsigned int ScreenY)
 
 bool Engine::Shutdown()
 {
+	//Destroy window
+	SDL_DestroyWindow(mWindow);
 
-	return false;
+	//Quit SDL
+	SDL_Quit();
+
+	return true;
+}
+
+void Engine::BlitSurface(SDL_Surface* Surface)
+{
+	//Apply the image
+	SDL_BlitSurface(Surface, NULL, mSurface, NULL);
+	SDL_UpdateWindowSurface(mWindow);
 }
