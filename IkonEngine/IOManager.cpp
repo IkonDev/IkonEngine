@@ -1,7 +1,7 @@
 #include "IOManager.h"
 #include <SDL.h>
 #include <stdio.h>
-SDL_Surface* IOManager::LoadSurface(char * FilePath)
+SDL_Surface* IOManager::LoadSurface(char* FilePath)
 {
 	SDL_Surface* Surface = nullptr;
 	Surface = SDL_LoadBMP(FilePath);
