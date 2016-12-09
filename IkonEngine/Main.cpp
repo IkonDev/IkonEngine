@@ -7,6 +7,7 @@
 #include "Engine.h"
 #include "Application.h"
 
+
 #undef main //Makes SDL work, SDL tries to declare its own main function
 
 int main()
@@ -23,6 +24,9 @@ int main()
 
 
 	App->BlitImage("Data/Tex/Test.bmp");
+
+
+
 
 	//Shutdown Engine
 	EE->Shutdown();
