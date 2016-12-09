@@ -27,3 +27,6 @@
 *.exe
 *.out
 *.app
+IkonEngine/.vs/IkonEngine/v14/.suo
+IkonEngine/IkonEngine.VC.VC.opendb
+IkonEngine/IkonEngine.VC.db
