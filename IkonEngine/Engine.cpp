@@ -51,9 +51,9 @@ bool Engine::Shutdown()
 	return true;
 }
 
-void Engine::BlitSurface(SDL_Surface* Surface)
+void Engine::BlitSurface(SDL_Surface* Surface, SDL_Rect Transform)
 {
 	//Apply the image
-	SDL_BlitSurface(Surface, NULL, mSurface, NULL);
+	SDL_BlitScaled(Surface, NULL, mSurface, &Transform);
 	SDL_UpdateWindowSurface(mWindow);
 }

@@ -11,8 +11,9 @@ public:
 
 	bool Init(unsigned int ScreenX, unsigned int ScreenY);
 	bool Shutdown();
-	void BlitSurface(SDL_Surface* Surface);
+	void BlitSurface(SDL_Surface* Surface, SDL_Rect Transform = { 0,0,0,0 });
 	SDL_Surface* GetSurface() { return mSurface; }
+	SDL_Window* GetWindow() { return mWindow; }
 private:
 	bool b_mWasInit = false;
 

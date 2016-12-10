@@ -22,11 +22,11 @@ int main()
 	Application* App = new Application();
 	App->SetEngine(EE);
 
-
-	App->BlitImage("Data/Tex/Test.bmp");
-
-
-
+	//Place some images
+	App->BlitImage("Data/Tex/Test.bmp", 0, 0,32,32);
+	App->BlitImage("Data/Tex/Test.bmp", 64, 0, 32, 32);
+	App->BlitImage("Data/Tex/Test.bmp", 0, 64, 32, 32);
+	App->BlitImage("Data/Tex/Test.bmp", 64, 64, 32, 32);
 
 	//Shutdown Engine
 	EE->Shutdown();
