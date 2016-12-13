@@ -6,7 +6,11 @@
 
 #include "Engine.h"
 #include "Application.h"
+#include "IOManager.h"
+#include <glm/vec2.hpp>
+
 #include <ctime>
+#include <stdio.h>
 
 #undef main //Makes SDL work, SDL tries to declare its own main function
 
@@ -18,57 +22,76 @@ int main()
 	//Setup Engine
 	Engine* EE = new Engine();
 	EE->Init(1024,768);
-	//Setup Game
+
+	//Setup GameApp
 	Application* App = new Application();
 	App->SetEngine(EE);
 
-	//Pingas
-	srand(time(NULL));
-	int i = 0;
-	while (i < 1500)
+#pragma region GAME
+	//Pings
+	srand((unsigned int)time(NULL));
+
+	//Make some surfaces
+	SDL_Texture* Ping[6] =
+	{ IOManager::LoadTexture("Data/Tex/PINGA-1.png", EE->GetRenderer()) ,
+	  IOManager::LoadTexture("Data/Tex/PINGA-2.png", EE->GetRenderer()) ,
+	  IOManager::LoadTexture("Data/Tex/PINGA-3.png", EE->GetRenderer()) ,
+	  IOManager::LoadTexture("Data/Tex/PINGA-4.png", EE->GetRenderer()) ,
+	  IOManager::LoadTexture("Data/Tex/PINGA-5.png", EE->GetRenderer()) ,
+	  IOManager::LoadTexture("Data/Tex/PINGA-6.png", EE->GetRenderer()) };
+
+	glm::vec2 SD = EE->GetScreenDimensions(); //Get screen size
+	
+	int Frame = 0;
+	unsigned int i = SDL_GetTicks();
+	while (Frame < 100000)
 	{
-		for (int x = 0; x < 1024 / 64; ++x)
+		for (int x = 0; x < SD.x / 64; ++x)
 		{
-			for (int y = 0; y < 768 / 64; ++y)
+			for (int y = 0; y < SD.y / 64; ++y)
 			{
-				char* FilePath = "";
 				switch (rand() % 6)
 				{
 				case 0:
-					FilePath = "Data/Tex/PINGA-1.bmp";
+					App->RenderTexture(Ping[0], x * 64, y * 64, 64, 64);
 					break;
 				case 1:
-					FilePath = "Data/Tex/PINGA-2.bmp";
+					App->RenderTexture(Ping[1], x * 64, y * 64, 64, 64);
 					break;
 				case 2:
-					FilePath = "Data/Tex/PINGA-3.bmp";
+					App->RenderTexture(Ping[2], x * 64, y * 64, 64, 64);
 					break;
 				case 3:
-					FilePath = "Data/Tex/PINGA-4.bmp";
+					App->RenderTexture(Ping[3], x * 64, y * 64, 64, 64);
 					break;
 				case 4:
-					FilePath = "Data/Tex/PINGA-5.bmp";
+					App->RenderTexture(Ping[4], x * 64, y * 64, 64, 64);
 					break;
 				case 5:
-					FilePath = "Data/Tex/PINGA-6.bmp";
+					App->RenderTexture(Ping[5], x * 64, y * 64, 64, 64);
 					break;
 				}
-				App->BlitImage(FilePath, x * 64, y * 64, 64, 64);
 			}
 		}
+
 		EE->UpdateWindow();
 		//SDL_Delay(250);
-		EE->ClearSurface();
-		++i;
+		//EE->ClearSurface();
+		Frame++;
 	}
-	//Quick game loop
 
-	//Place some images
-	//App->BlitImage("Data/Tex/Test.bmp", 0, 0, 128, 128);
-	//App->BlitImage("Data/Tex/Test2.bmp", 128, 0,128,128);
-	//App->BlitImage("Data/Tex/Test2.bmp", 0, 128, 128, 128);
-	//App->BlitImage("Data/Tex/Test.bmp", 128, 128, 128, 128);
-	//SDL_Delay(5000);
+	printf("%i Frames/s\n", Frame);
+	SDL_Delay(550);
+
+	//Free Surfaces
+	for (int j = 0; j < 6; ++j)
+	{
+		SDL_DestroyTexture(Ping[j]);
+		Ping[j] = nullptr;
+	}
+
+	
+#pragma endregion GAME
 
 	//Shutdown Engine
 	EE->Shutdown();
@@ -76,6 +99,5 @@ int main()
 	delete App;
 
 	//C++ Stuff
-	//system("pause");
 	return 0;
 }

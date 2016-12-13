@@ -1,26 +1,65 @@
 #include "IOManager.h"
 #include <SDL.h>
+#include <SDL_image.h>
 #include <stdio.h>
 SDL_Surface* IOManager::LoadSurface(char* FilePath, const SDL_PixelFormat* Format)
 {
-	SDL_Surface* Surface = nullptr;
+	//If the pixelformat isnt set, set it to RGB888 by default.
+	if (Format == nullptr)
+	{
+		Format = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
+	}
+
 	SDL_Surface* OptimizedSurface = nullptr;
-	Surface = SDL_LoadBMP(FilePath);
+	SDL_Surface* Surface = nullptr;
+	Surface = IMG_Load(FilePath);
 	if (Surface == nullptr)
 	{
-		printf("Unable to load image %s! SDL Error: %s\n", FilePath, SDL_GetError());
+		printf("Unable to load image %s! SDL Error: %s\n", FilePath, IMG_GetError());
+		return nullptr;
 	}
-	else
-	{
-		OptimizedSurface = SDL_ConvertSurface(Surface, Format, NULL);
-		if (OptimizedSurface == nullptr)
-		{
-			printf("Unable to optimize image %s! SDL Error: %s\n", FilePath, SDL_GetError());
-		}
 
-		//Get rid of old loaded surface
-		SDL_FreeSurface(Surface);
-		return OptimizedSurface;
+	//Convert surface to optimized format
+	OptimizedSurface = SDL_ConvertSurface(Surface, Format, NULL);
+	if (OptimizedSurface == nullptr)
+	{
+		printf("Unable to optimize image %s! SDL Error: %s\n", FilePath, SDL_GetError());
+		return nullptr;
 	}
-	return nullptr;
+
+	//Get rid of old loaded surface
+	SDL_FreeSurface(Surface);
+
+	return OptimizedSurface;
+}
+
+SDL_Texture* IOManager::LoadTexture(char * FilePath, SDL_Renderer* Renderer, const SDL_PixelFormat * Format)
+{
+	//If the pixelformat isnt set, set it to RGB888 by default.
+	if (Format == nullptr)
+	{
+		Format = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
+	}
+
+	//Get the image as a surface
+	SDL_Surface* Surface = nullptr;
+	Surface = IMG_Load(FilePath);
+	if (Surface == nullptr)
+	{
+		printf("Unable to load image %s! SDL Error: %s\n", FilePath, IMG_GetError());
+		return nullptr;
+	}
+
+	//Create a texture from the surface
+	SDL_Texture* Texture = nullptr;
+	Texture = SDL_CreateTextureFromSurface(Renderer, Surface);
+	if (Texture == nullptr)
+	{
+		printf("Unable to create texture from %s! SDL Error: %s\n", FilePath, SDL_GetError());
+		return nullptr;
+	}
+	//Free the surface
+	SDL_FreeSurface(Surface);
+
+	return Texture;
 }

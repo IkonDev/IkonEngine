@@ -10,50 +10,52 @@ Application::~Application()
 {
 }
 
-void Application::BlitImage(char * FilePath)
+void Application::RenderTexture(char * FilePath)
 {
-	SDL_Surface* Surface = nullptr;
-	Surface = IOManager::LoadSurface(FilePath, mEngine->GetSurface()->format);
-	if (Surface != nullptr)
+	SDL_Texture* Texture = nullptr;
+	Texture = IOManager::LoadTexture(FilePath, mEngine->GetRenderer());
+	if (Texture != nullptr)
 	{
-		mEngine->BlitSurface(Surface);
+		mEngine->RenderTexture(Texture);
 	}
-	SDL_FreeSurface(Surface);
+	SDL_DestroyTexture(Texture);
+	Texture = nullptr;
 }
 
-void Application::BlitImage(char * FilePath, int x, int y, int w, int h)
+void Application::RenderTexture(char * FilePath, int x, int y, int w, int h)
 {
-	SDL_Surface* Surface = nullptr;
-	Surface = IOManager::LoadSurface(FilePath, mEngine->GetSurface()->format);
-	if (Surface != nullptr)
+	SDL_Texture* Texture = nullptr;
+	Texture = IOManager::LoadTexture(FilePath, mEngine->GetRenderer());
+	if (Texture != nullptr)
 	{
 		SDL_Rect Transform;
 		Transform.x = x;
 		Transform.y = y;
 		Transform.w = w;
 		Transform.h = h;
-		mEngine->BlitSurface(Surface, Transform);
+		mEngine->RenderTexture(Texture, Transform);
 	}
-	SDL_FreeSurface(Surface);
+	SDL_DestroyTexture(Texture);
+	Texture = nullptr;
 }
 
-void Application::BlitImage(SDL_Surface* Surface)
+void Application::RenderTexture(SDL_Texture* Texture)
 {
-	if (Surface != nullptr)
+	if (Texture != nullptr)
 	{
-		mEngine->BlitSurface(Surface);
+		mEngine->RenderTexture(Texture);
 	}
 }
 
-void Application::BlitImage(SDL_Surface* Surface, int x, int y, int w, int h)
+void Application::RenderTexture(SDL_Texture* Texture, int x, int y, int w, int h)
 {
-	if (Surface != nullptr)
+	if (Texture != nullptr)
 	{
 		SDL_Rect Transform;
 		Transform.x = x;
 		Transform.y = y;
 		Transform.w = w;
 		Transform.h = h;
-		mEngine->BlitSurface(Surface, Transform);
+		mEngine->RenderTexture(Texture, Transform);
 	}
 }

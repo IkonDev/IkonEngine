@@ -36,3 +36,4 @@ IkonEngine/Build_Win32/
 *.psess
 IkonEngine/Data/Tex/Thumbs.db
 IkonEngine/Build_x64/
+IkonEngine/Data/

@@ -1,43 +1,79 @@
 #include "Engine.h"
 #include <stdio.h>
+#include <SDL_image.h>
 
 bool Engine::Init(unsigned int ScreenX, unsigned int ScreenY)
 {
-	v_mScreenDimensions = glm::vec2(ScreenX, ScreenY);
+	m_vScreenDimensions = glm::vec2(ScreenX, ScreenY);
+	m_bWasInit = true;
 
 	//Init SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
 		//SDL Initialization failed
 		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+		m_bWasInit = false;
+		return false;
+	}
+
+	//PNG Loading
+	int ImgFlags = IMG_INIT_PNG;
+	if (!(IMG_Init(ImgFlags) & ImgFlags))
+	{
+		printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
+		m_bWasInit = false;
+		return false;
+	}
+
+	//Create window
+	mWindow = SDL_CreateWindow("SDL_TEST", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ScreenX, ScreenY, SDL_WINDOW_SHOWN);
+	if (mWindow == nullptr)
+	{
+		//Window creation failed
+		printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+		m_bWasInit = false;
+		return false;
 	}
 	else
 	{
-		//Create window
-		mWindow = SDL_CreateWindow("SDL_TEST", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ScreenX, ScreenY, SDL_WINDOW_SHOWN);
-		if (mWindow == nullptr)
+		//Window was succesfully created
+		mSurface = SDL_GetWindowSurface(mWindow);
+
+		//Fill the screen grey // clear screen
+		ClearRenderer();
+
+		//Update the window
+		SDL_UpdateWindowSurface(mWindow);
+	}
+
+	//Try to create hardware renderer for window
+	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED);
+	if (mRenderer == nullptr)
+	{
+		//If that fails... Display an error and try to create software renderer for window
+		printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
+
+		mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_SOFTWARE);
+		if (mRenderer == nullptr)
 		{
-			//Window creation failed
-			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+			printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
+			m_bWasInit = false;
+			return false;
 		}
 		else
 		{
-			//Window was succesfully created
-			mSurface = SDL_GetWindowSurface(mWindow);
-
-			//Fill the screen grey // clear screen
-			ClearSurface();
-
-			//Update the window
-			SDL_UpdateWindowSurface(mWindow);
-
-			printf("Init Successful!");
-			b_mWasInit = true;
-
-			return true;
+			printf("Fallback To Software Rendering\n");
 		}
 	}
-	return false;
+
+	if (mRenderer != nullptr)
+	{
+		//Initialize renderer color
+		SDL_SetRenderDrawColor(mRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	}
+
+	printf("IkonEngine Init Successful!!\n");
+	return true;
 }
 
 bool Engine::Shutdown()
@@ -47,22 +83,21 @@ bool Engine::Shutdown()
 
 	//Quit SDL
 	SDL_Quit();
-
+	IMG_Quit();
 	return true;
 }
 
-void Engine::BlitSurface(SDL_Surface* Surface, SDL_Rect Transform)
+void Engine::ClearRenderer()
 {
-	//Apply the image
-	SDL_BlitScaled(Surface, NULL, mSurface, &Transform);
-}
-
-void Engine::ClearSurface()
-{
-	SDL_FillRect(mSurface, NULL, SDL_MapRGB(mSurface->format, 0x11, 0x11, 0x11));
+	SDL_RenderClear(mRenderer);
 }
 
 void Engine::UpdateWindow()
 {
-	SDL_UpdateWindowSurface(mWindow);
+	SDL_RenderPresent(mRenderer);
+}
+
+void Engine::RenderTexture(SDL_Texture * Texture, SDL_Rect Transform)
+{
+	SDL_RenderCopy(mRenderer, Texture, NULL, &Transform);
 }
