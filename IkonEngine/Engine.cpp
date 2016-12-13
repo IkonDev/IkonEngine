@@ -25,8 +25,8 @@ bool Engine::Init(unsigned int ScreenX, unsigned int ScreenY)
 			//Window was succesfully created
 			mSurface = SDL_GetWindowSurface(mWindow);
 
-			//Fill the screen grey
-			SDL_FillRect(mSurface, NULL, SDL_MapRGB(mSurface->format, 0x11, 0x11, 0x11));
+			//Fill the screen grey // clear screen
+			ClearSurface();
 
 			//Update the window
 			SDL_UpdateWindowSurface(mWindow);
@@ -55,5 +55,14 @@ void Engine::BlitSurface(SDL_Surface* Surface, SDL_Rect Transform)
 {
 	//Apply the image
 	SDL_BlitScaled(Surface, NULL, mSurface, &Transform);
+}
+
+void Engine::ClearSurface()
+{
+	SDL_FillRect(mSurface, NULL, SDL_MapRGB(mSurface->format, 0x11, 0x11, 0x11));
+}
+
+void Engine::UpdateWindow()
+{
 	SDL_UpdateWindowSurface(mWindow);
 }

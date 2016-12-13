@@ -11,9 +11,10 @@ public:
 
 	//Blits an image to the screen
 	void BlitImage(char* FilePath);
-	void BlitImage(char* FilePath, int x, int y, int w, int h);
+	void BlitImage(char* FilePath, int x = 0, int y = 0, int w = 0, int h = 0);
 	void BlitImage(SDL_Surface* Surface);
-	void BlitImage(SDL_Surface* Surface, int x, int y, int w, int h);
+	void BlitImage(SDL_Surface* Surface, int x = 0, int y = 0, int w = 0, int h = 0);
+
 private:
 	Engine* mEngine = nullptr;
 };
