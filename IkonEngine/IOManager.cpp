@@ -1,7 +1,10 @@
 #include "IOManager.h"
+
 #include <SDL.h>
 #include <SDL_image.h>
+
 #include <stdio.h>
+
 SDL_Surface* IOManager::LoadSurface(char* FilePath, const SDL_PixelFormat* Format)
 {
 	//If the pixelformat isnt set, set it to RGB888 by default.
@@ -35,20 +38,9 @@ SDL_Surface* IOManager::LoadSurface(char* FilePath, const SDL_PixelFormat* Forma
 
 SDL_Texture* IOManager::LoadTexture(char * FilePath, SDL_Renderer* Renderer, const SDL_PixelFormat * Format)
 {
-	//If the pixelformat isnt set, set it to RGB888 by default.
-	if (Format == nullptr)
-	{
-		Format = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
-	}
-
-	//Get the image as a surface
-	SDL_Surface* Surface = nullptr;
-	Surface = IMG_Load(FilePath);
-	if (Surface == nullptr)
-	{
-		printf("Unable to load image %s! SDL Error: %s\n", FilePath, IMG_GetError());
-		return nullptr;
-	}
+	//Get the image as a surface 
+	//Use LoadSurface to handle error checking & minimise code
+	SDL_Surface* Surface = LoadSurface(FilePath, Format);
 
 	//Create a texture from the surface
 	SDL_Texture* Texture = nullptr;
@@ -58,6 +50,7 @@ SDL_Texture* IOManager::LoadTexture(char * FilePath, SDL_Renderer* Renderer, con
 		printf("Unable to create texture from %s! SDL Error: %s\n", FilePath, SDL_GetError());
 		return nullptr;
 	}
+
 	//Free the surface
 	SDL_FreeSurface(Surface);
 

@@ -4,6 +4,7 @@
 
 bool Engine::Init(unsigned int ScreenX, unsigned int ScreenY)
 {
+	Instance = this;
 	m_vScreenDimensions = glm::vec2(ScreenX, ScreenY);
 	m_bWasInit = true;
 
@@ -97,7 +98,12 @@ void Engine::UpdateWindow()
 	SDL_RenderPresent(mRenderer);
 }
 
-void Engine::RenderTexture(SDL_Texture * Texture, SDL_Rect Transform)
+Engine* Engine::GetEngine()
 {
-	SDL_RenderCopy(mRenderer, Texture, NULL, &Transform);
+	return Instance;
+}
+
+void Engine::RenderTexture(SDL_Texture * Texture, SDL_Rect* Transform, double Angle, SDL_Point* Centre, SDL_RendererFlip Flip, SDL_Rect* Clip)
+{
+	SDL_RenderCopyEx(mRenderer, Texture, Clip, Transform, Angle, Centre, Flip);
 }

@@ -19,19 +19,26 @@ int main()
 	//CRT leak detector, tell it to dump leaks at any program exit.
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	//Setup Engine
-	Engine* EE = new Engine();
-	EE->Init(1024,768);
-
-	//Setup GameApp
-	Application* App = new Application();
-	App->SetEngine(EE);
-
-#pragma region GAME
-	//Pings
+	//Seed RNG
 	srand((unsigned int)time(NULL));
 
+	//Setup Engine
+	Engine* EE = new Engine();
+	Application* App = nullptr;
+
+	//If the engine initializes successfully...
+	if (EE->Init(1024, 768))
+	{
+		//...Create the App and give it the engine.
+		App = new Application();
+		App->SetEngine(EE);
+	}
+	//The engine (EE) isnt really used by the programmer after this point
+	
+#pragma region GAME
+
 	//Make some surfaces
+	//SDL_Renderer* Renderer = EE->GetRenderer();
 	SDL_Texture* Ping[6] =
 	{ IOManager::LoadTexture("Data/Tex/PINGA-1.png", EE->GetRenderer()) ,
 	  IOManager::LoadTexture("Data/Tex/PINGA-2.png", EE->GetRenderer()) ,
@@ -40,64 +47,52 @@ int main()
 	  IOManager::LoadTexture("Data/Tex/PINGA-5.png", EE->GetRenderer()) ,
 	  IOManager::LoadTexture("Data/Tex/PINGA-6.png", EE->GetRenderer()) };
 
-	glm::vec2 SD = EE->GetScreenDimensions(); //Get screen size
+	//Get screen size
+	glm::vec2 SD = EE->GetScreenDimensions(); 
 	
-	int Frame = 0;
-	unsigned int i = SDL_GetTicks();
-	while (Frame < 100000)
+	//Loop n times
+	unsigned int TileSize = 128;
+	for (int Frame = 0; Frame < 1200; ++Frame)
 	{
-		for (int x = 0; x < SD.x / 64; ++x)
+		for (int x = 0; x < SD.x / TileSize; ++x)
 		{
-			for (int y = 0; y < SD.y / 64; ++y)
+			for (int y = 0; y < SD.y / TileSize; ++y)
 			{
-				switch (rand() % 6)
-				{
-				case 0:
-					App->RenderTexture(Ping[0], x * 64, y * 64, 64, 64);
-					break;
-				case 1:
-					App->RenderTexture(Ping[1], x * 64, y * 64, 64, 64);
-					break;
-				case 2:
-					App->RenderTexture(Ping[2], x * 64, y * 64, 64, 64);
-					break;
-				case 3:
-					App->RenderTexture(Ping[3], x * 64, y * 64, 64, 64);
-					break;
-				case 4:
-					App->RenderTexture(Ping[4], x * 64, y * 64, 64, 64);
-					break;
-				case 5:
-					App->RenderTexture(Ping[5], x * 64, y * 64, 64, 64);
-					break;
-				}
+				//Create Transformation
+				SDL_Rect Transform;
+				Transform.x = x * TileSize;
+				Transform.y = y * TileSize;
+				Transform.w = TileSize;
+				Transform.h = TileSize;
+
+				//Pick a random sprite
+				int RandomSpriteIndex = rand() % 6;
+
+				//Render			
+				App->RenderTexture(Ping[RandomSpriteIndex], &Transform);
 			}
 		}
 
-		EE->UpdateWindow();
-		//SDL_Delay(250);
-		//EE->ClearSurface();
-		Frame++;
+		//Once all the sprites have been blit, update
+		App->UpdateWindow();
+		App->Wait(50);
 	}
-
-	printf("%i Frames/s\n", Frame);
-	SDL_Delay(550);
-
-	//Free Surfaces
-	for (int j = 0; j < 6; ++j)
-	{
-		SDL_DestroyTexture(Ping[j]);
-		Ping[j] = nullptr;
-	}
-
 	
+	//Free Surfaces
+	for (int i = 0; i < 6; ++i)
+	{
+		SDL_DestroyTexture(Ping[i]); //This will be fixed as soon as I get around to making a texture class.
+		Ping[i] = nullptr;
+	}
+	//32 LINES OF CODE PROGRAM LOL
 #pragma endregion GAME
 
+	//Shutdown App
+	App->SetEngine(nullptr);
+	delete App;
 	//Shutdown Engine
 	EE->Shutdown();
 	delete EE;
-	delete App;
-
-	//C++ Stuff
+	//End program
 	return 0;
 }

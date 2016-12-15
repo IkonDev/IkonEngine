@@ -133,6 +133,7 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="IOManager.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -142,6 +143,7 @@
     <ClInclude Include="Engine.h" />
     <ClInclude Include="IOManager.h" />
     <ClInclude Include="SDL_mixer.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="SDL2_mixer.lib" />

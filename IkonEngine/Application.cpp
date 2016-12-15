@@ -9,8 +9,8 @@ Application::Application()
 Application::~Application()
 {
 }
-
-void Application::RenderTexture(char * FilePath)
+/*
+void Application::RenderTexture(char* FilePath)
 {
 	SDL_Texture* Texture = nullptr;
 	Texture = IOManager::LoadTexture(FilePath, mEngine->GetRenderer());
@@ -22,23 +22,18 @@ void Application::RenderTexture(char * FilePath)
 	Texture = nullptr;
 }
 
-void Application::RenderTexture(char * FilePath, int x, int y, int w, int h)
+void Application::RenderTexture(char* FilePath, SDL_Rect* Transform, double Angle, SDL_Point* Centre, SDL_RendererFlip Flip, SDL_Rect* Clip)
 {
 	SDL_Texture* Texture = nullptr;
 	Texture = IOManager::LoadTexture(FilePath, mEngine->GetRenderer());
 	if (Texture != nullptr)
 	{
-		SDL_Rect Transform;
-		Transform.x = x;
-		Transform.y = y;
-		Transform.w = w;
-		Transform.h = h;
-		mEngine->RenderTexture(Texture, Transform);
+		mEngine->RenderTexture(Texture, *Transform, Angle, Centre, Flip, *Clip);
 	}
 	SDL_DestroyTexture(Texture);
 	Texture = nullptr;
 }
-
+*/
 void Application::RenderTexture(SDL_Texture* Texture)
 {
 	if (Texture != nullptr)
@@ -47,15 +42,10 @@ void Application::RenderTexture(SDL_Texture* Texture)
 	}
 }
 
-void Application::RenderTexture(SDL_Texture* Texture, int x, int y, int w, int h)
+void Application::RenderTexture(SDL_Texture* Texture, SDL_Rect* Transform, double Angle, SDL_Point* Centre, SDL_RendererFlip Flip, SDL_Rect* Clip)
 {
 	if (Texture != nullptr)
-	{
-		SDL_Rect Transform;
-		Transform.x = x;
-		Transform.y = y;
-		Transform.w = w;
-		Transform.h = h;
-		mEngine->RenderTexture(Texture, Transform);
+	{		
+		mEngine->RenderTexture(Texture, Transform, Angle, Centre, Flip, Clip);
 	}
 }
