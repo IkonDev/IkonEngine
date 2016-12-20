@@ -103,7 +103,16 @@ Engine* Engine::GetEngine()
 	return Instance;
 }
 
-void Engine::RenderTexture(SDL_Texture * Texture, SDL_Rect* Transform, double Angle, SDL_Point* Centre, SDL_RendererFlip Flip, SDL_Rect* Clip)
+void Engine::RenderTexture(SDL_Texture* Texture, SDL_Rect* Transform, double Angle, SDL_Point* Centre, SDL_RendererFlip Flip, SDL_Rect* Clip)
 {
+	//if (Clip == nullptr)
+	//{
+	//	SDL_Rect R;
+	//	R.x = 0;
+	//	R.y = 0;
+	//	R.w = X;
+	//	R.h = Y;
+	//	Clip = &R;
+	//}
 	SDL_RenderCopyEx(mRenderer, Texture, Clip, Transform, Angle, Centre, Flip);
 }

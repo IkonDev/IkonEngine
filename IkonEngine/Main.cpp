@@ -39,51 +39,28 @@ int main()
 
 	//Make some surfaces
 	//SDL_Renderer* Renderer = EE->GetRenderer();
-	SDL_Texture* Ping[6] =
-	{ IOManager::LoadTexture("Data/Tex/PINGA-1.png", EE->GetRenderer()) ,
-	  IOManager::LoadTexture("Data/Tex/PINGA-2.png", EE->GetRenderer()) ,
-	  IOManager::LoadTexture("Data/Tex/PINGA-3.png", EE->GetRenderer()) ,
-	  IOManager::LoadTexture("Data/Tex/PINGA-4.png", EE->GetRenderer()) ,
-	  IOManager::LoadTexture("Data/Tex/PINGA-5.png", EE->GetRenderer()) ,
-	  IOManager::LoadTexture("Data/Tex/PINGA-6.png", EE->GetRenderer()) };
+	
 
 	//Get screen size
-	glm::vec2 SD = EE->GetScreenDimensions(); 
 	
-	//Loop n times
-	unsigned int TileSize = 128;
-	for (int Frame = 0; Frame < 1200; ++Frame)
+	bool quit = false;
+	while (!quit)
 	{
-		for (int x = 0; x < SD.x / TileSize; ++x)
+		EE->ClearRenderer();
+		//Handle events on queue
+		SDL_Event e;
+		while (SDL_PollEvent(&e) != 0)
 		{
-			for (int y = 0; y < SD.y / TileSize; ++y)
+			//User requests quit
+			if (e.type == SDL_QUIT)
 			{
-				//Create Transformation
-				SDL_Rect Transform;
-				Transform.x = x * TileSize;
-				Transform.y = y * TileSize;
-				Transform.w = TileSize;
-				Transform.h = TileSize;
-
-				//Pick a random sprite
-				int RandomSpriteIndex = rand() % 6;
-
-				//Render			
-				App->RenderTexture(Ping[RandomSpriteIndex], &Transform);
+				quit = true;
 			}
 		}
+		App->Update();
+		App->Draw();	
+	}
 
-		//Once all the sprites have been blit, update
-		App->UpdateWindow();
-		App->Wait(50);
-	}
-	
-	//Free Surfaces
-	for (int i = 0; i < 6; ++i)
-	{
-		SDL_DestroyTexture(Ping[i]); //This will be fixed as soon as I get around to making a texture class.
-		Ping[i] = nullptr;
-	}
 	//32 LINES OF CODE PROGRAM LOL
 #pragma endregion GAME
 
