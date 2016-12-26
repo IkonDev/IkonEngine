@@ -50,9 +50,6 @@
     <ClInclude Include="IOManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDL_mixer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -62,8 +59,5 @@
     <ClInclude Include="PlayerObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="SDL2_mixer.lib" />
   </ItemGroup>
 </Project>

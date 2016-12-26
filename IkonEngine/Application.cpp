@@ -5,6 +5,7 @@
 
 Application::Application()
 {
+	Ping = IOManager::LoadTexture("Data/Tex/Game/Grass.png", Engine::GetEngine()->GetRenderer());
 	P = new PlayerObject();
 	P->SetPosition(glm::vec2(256, 256));
 }
@@ -15,11 +16,10 @@ Application::~Application()
 }
 void Application::Update()
 {
-	P->Update(1);
+	P->Update(0.06f);
 }
 void Application::Draw()
 {
-	SDL_Texture* Ping = IOManager::LoadTexture("Data/Tex/PINGA-2.png", mEngine->GetRenderer());
 	glm::vec2 SD = mEngine->GetScreenDimensions();
 	for (int x = 0; x < SD.x / TILESIZE; ++x)
 	{
@@ -38,7 +38,7 @@ void Application::Draw()
 	}
 
 	P->Draw(this);
-	Wait(50);
+	//Wait(50);
 	UpdateWindow();
 }
 /*

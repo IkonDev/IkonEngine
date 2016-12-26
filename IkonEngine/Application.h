@@ -29,5 +29,7 @@ private:
 
 	//Game stuff
 	GameObject* P = nullptr;
+
+	SDL_Texture* Ping;
 };
 

@@ -3,9 +3,11 @@
 #include "IOManager.h"
 #include <SDL.h>
 
+#define PI 3.14159265359
+
 PlayerObject::PlayerObject()
 {
-	Tex = IOManager::LoadTexture("Data/Tex/PINGA-1.png", Engine::GetEngine()->GetRenderer());
+	Tex = IOManager::LoadTexture("Data/Tex/Game/Dude.png", Engine::GetEngine()->GetRenderer());
 }
 
 PlayerObject::~PlayerObject()
@@ -14,35 +16,33 @@ PlayerObject::~PlayerObject()
 
 void PlayerObject::Update(float DT)
 {
+	double xRot =  sin(Rotation * PI / 180);
+	double yRot = -cos(Rotation * PI / 180);
+	glm::vec2 Rot = glm::vec2(xRot, yRot);
+	Rot = glm::normalize(Rot);
+
 	//Set texture based on current keystate
 	const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 	if (currentKeyStates[SDL_SCANCODE_UP])
 	{
-		Position.y -= (float)TILESIZE;
+		Position += Rot * DT;
 	}
 	if (currentKeyStates[SDL_SCANCODE_DOWN])
 	{
-		Position.y += (float)TILESIZE;
+		Position -= Rot * DT;
 	}
 	if (currentKeyStates[SDL_SCANCODE_LEFT])
 	{
-		Position.x -= (float)TILESIZE;
+		Rotation -= 1.5 * DT;
 	}
 	if (currentKeyStates[SDL_SCANCODE_RIGHT])
 	{
-		Position.x += (float)TILESIZE;
+		Rotation += 1.5 * DT;
 	}
 }
 
 void PlayerObject::Draw(Application* RenderApp)
 {
-	glm::vec4 Transform;
-	Transform.x = Position.x;
-	Transform.y = Position.y;
-	Transform.z = (float)TILESIZE;
-	Transform.w = (float)TILESIZE;
-
-	if(Tex != nullptr)
-		RenderApp->RenderTexture(Tex, Transform);
+	GameObject::Draw(RenderApp);
 }
 

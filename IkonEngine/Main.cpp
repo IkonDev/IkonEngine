@@ -7,7 +7,6 @@
 #include "Engine.h"
 #include "Application.h"
 #include "IOManager.h"
-#include <glm/vec2.hpp>
 
 #include <ctime>
 #include <stdio.h>
@@ -37,12 +36,6 @@ int main()
 	
 #pragma region GAME
 
-	//Make some surfaces
-	//SDL_Renderer* Renderer = EE->GetRenderer();
-	
-
-	//Get screen size
-	
 	bool quit = false;
 	while (!quit)
 	{
