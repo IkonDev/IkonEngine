@@ -1,5 +1,4 @@
 #include "IOManager.h"
-
 #include <SDL.h>
 #include <SDL_image.h>
 
@@ -36,7 +35,7 @@ SDL_Surface* IOManager::LoadSurface(char* FilePath, const SDL_PixelFormat* Forma
 	return OptimizedSurface;
 }
 
-SDL_Texture* IOManager::LoadTexture(char * FilePath, SDL_Renderer* Renderer, const SDL_PixelFormat * Format)
+SDL_Texture* IOManager::LoadTexture(char* FilePath, SDL_Renderer* Renderer, const SDL_PixelFormat * Format)
 {
 	//Get the image as a surface 
 	//Use LoadSurface to handle error checking & minimise code

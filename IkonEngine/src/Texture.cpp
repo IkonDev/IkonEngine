@@ -1,6 +1,7 @@
 #include "Texture.h"
 #include "IOManager.h"
 #include "Engine.h"
+#include <string>
 #include <SDL.h>
 Texture::Texture()
 {
@@ -21,7 +22,13 @@ Texture::~Texture()
 	}
 }
 
-void Texture::LoadTexture(char * FilePath)
+void Texture::LoadTexture(char* FilePath)
 {
-	TextureData = IOManager::LoadTexture(FilePath, Engine::GetEngine()->GetRenderer());
+	TextureData = IOManager::LoadTexture(FilePath, Engine::Instance()->GetRenderer());
+}
+
+void Texture::SetColourMod(unsigned int red, unsigned int green, unsigned int blue)
+{
+	//Modulate texture
+	SDL_SetTextureColorMod(TextureData, red, green, blue);
 }

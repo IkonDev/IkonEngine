@@ -1,10 +1,10 @@
 #include "Engine.h"
 #include <stdio.h>
 #include <SDL_image.h>
-
-bool Engine::Init(unsigned int ScreenX, unsigned int ScreenY)
+#include "InputHandler.h"
+Engine* Engine::m_Instance = 0;
+bool Engine::Init(unsigned int ScreenX, unsigned int ScreenY, const char* AppName)
 {
-	Instance = this;
 	m_vScreenDimensions = glm::vec2(ScreenX, ScreenY);
 	m_bWasInit = true;
 
@@ -27,7 +27,7 @@ bool Engine::Init(unsigned int ScreenX, unsigned int ScreenY)
 	}
 
 	//Create window
-	mWindow = SDL_CreateWindow("SDL_TEST", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ScreenX, ScreenY, SDL_WINDOW_SHOWN);
+	mWindow = SDL_CreateWindow(AppName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ScreenX, ScreenY, SDL_WINDOW_SHOWN);
 	if (mWindow == nullptr)
 	{
 		//Window creation failed
@@ -85,6 +85,13 @@ bool Engine::Shutdown()
 	//Quit SDL
 	SDL_Quit();
 	IMG_Quit();
+
+	//Set states to false
+	if(m_bIsRunning)
+		m_bIsRunning = false;
+	if (m_bWasInit)
+		m_bWasInit = false;
+
 	return true;
 }
 
@@ -93,14 +100,64 @@ void Engine::ClearRenderer()
 	SDL_RenderClear(mRenderer);
 }
 
+void Engine::SetRenderColour(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+{
+	if (GetEngineState(EngineState::ENGINE_INIT))
+	{
+		//Initialize renderer color
+		SDL_SetRenderDrawColor(mRenderer, r, g, b, a);
+	}
+}
+
 void Engine::UpdateWindow()
 {
 	SDL_RenderPresent(mRenderer);
 }
 
-Engine* Engine::GetEngine()
+void Engine::Update()
 {
-	return Instance;
+	InputHandler::Instance()->SetPrevKeys();
+	//Handle events on queue
+	SDL_Event e;
+	while (SDL_PollEvent(&e) != 0)
+	{
+		//User requests quit
+		if (e.type == SDL_QUIT)
+		{
+			m_bIsRunning = false;
+		}
+		InputHandler::Instance()->HandleInput(e);
+	}
+}
+
+const bool Engine::GetEngineState(EngineState State)
+{
+	switch (State)
+	{
+	case EngineState::ENGINE_INIT:
+		return m_bWasInit;
+		break;
+
+	case EngineState::ENGINE_RUNNING:
+		return m_bIsRunning;
+		break;
+	}
+
+	return false;
+}
+
+void Engine::SetEngineState(EngineState State, bool Value)
+{
+	switch (State)
+	{
+	case EngineState::ENGINE_INIT:
+		m_bWasInit = Value;
+		break;
+
+	case EngineState::ENGINE_RUNNING:
+		m_bIsRunning = Value;
+		break;
+	}
 }
 
 void Engine::RenderTexture(SDL_Texture* Texture, SDL_Rect* Transform, double Angle, SDL_Point* Centre, SDL_RendererFlip Flip, SDL_Rect* Clip)

@@ -3,13 +3,12 @@
 #include <stdlib.h>  
 #include <crtdbg.h>  
 //--------------------------
+#include <ctime>
+#include <stdio.h>
 
 #include "Engine.h"
 #include "Application.h"
-#include "IOManager.h"
 
-#include <ctime>
-#include <stdio.h>
 
 #undef main //Makes SDL work, SDL tries to declare its own main function
 
@@ -22,47 +21,39 @@ int main()
 	srand((unsigned int)time(NULL));
 
 	//Setup Engine
-	Engine* EE = new Engine();
+	Engine* EE = Engine::Instance();
 	Application* App = nullptr;
 
 	//If the engine initializes successfully...
-	if (EE->Init(1024, 768))
+	if (EE->Init(1024, 1024, "Cellular Automata"))
 	{
 		//...Create the App and give it the engine.
 		App = new Application();
 		App->SetEngine(EE);
 	}
-	//The engine (EE) isnt really used by the programmer after this point
 	
 #pragma region GAME
 
-	bool quit = false;
-	while (!quit)
+	while (EE->GetEngineState(EngineState::ENGINE_RUNNING)) //Set the engine state ENGINE_RUNNING to false to quit
 	{
 		EE->ClearRenderer();
-		//Handle events on queue
-		SDL_Event e;
-		while (SDL_PollEvent(&e) != 0)
-		{
-			//User requests quit
-			if (e.type == SDL_QUIT)
-			{
-				quit = true;
-			}
-		}
+		EE->Update();
+
 		App->Update();
 		App->Draw();	
 	}
+	//5 Lines is all you need
 
-	//32 LINES OF CODE PROGRAM LOL
 #pragma endregion GAME
 
 	//Shutdown App
 	App->SetEngine(nullptr);
 	delete App;
+
 	//Shutdown Engine
 	EE->Shutdown();
 	delete EE;
+
 	//End program
 	return 0;
 }

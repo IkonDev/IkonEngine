@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 struct SDL_Surface;
 struct SDL_Texture;

@@ -1,9 +1,8 @@
 #pragma once
 #include "Engine.h"
-#include "PlayerObject.h"
-#include "GameObject.h"
+#include "InputHandler.h"
+#include "CellManager.h"
 
-#define TILESIZE 128
 
 class Application
 {
@@ -24,12 +23,23 @@ public:
 	void RenderTexture(SDL_Texture* Texture);
 	void RenderTexture(SDL_Texture* Texture, glm::vec4 Transform = glm::vec4(0), double Angle = 0.0, glm::vec2 Centre = glm::vec2(0), SDL_RendererFlip Flip = SDL_FLIP_NONE, SDL_Rect* Clip = nullptr);
 
+	int TileSize = 32;
+	int StartingPoint = 0;
 private:
 	Engine* mEngine = nullptr;
-
+	SDL_Texture* TileOff = nullptr;
+	SDL_Texture* TileOn = nullptr;
 	//Game stuff
-	GameObject* P = nullptr;
+	CellManager* Manager = nullptr;
+	InputHandler* Input;
 
-	SDL_Texture* Ping;
+	int CamX = 0;
+	int CamY = 0;
+	int CamZoom = 32;
+
+	unsigned int Updates = 0;
+	unsigned int UpdateRate = 0;
+	bool UpdateDraw = false;
+	bool EnableDraw = true;
 };
 

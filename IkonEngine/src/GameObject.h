@@ -16,6 +16,8 @@ public:
 	void SetPosition(glm::vec2 Pos) { Position = Pos; }
 	glm::vec2 GetPosition() const { return Position; }
 
+	SDL_Texture* GetTexture() const { return Tex; }
+
 protected:
 	SDL_Texture* Tex;
 	glm::vec2 Position;
